@@ -239,42 +239,39 @@ class WebServer {
           // "Owner's repo is named RepoName. Example: find RepoName's contributors" translates to
           //     "/repos/OWNERNAME/REPONAME/contributors"
 
-          boolean error = false;
           Map<String, String> query_pairs = new LinkedHashMap<String, String>();
           try {
             query_pairs = splitQuery(request.replace("github?", ""));
             String json = fetchURL("https://api.github.com/" + query_pairs.get("query"));
             System.out.println(json);
+            JSONArray repoArray = new JSONArray(json);
+            JSONArray newJSON = new JSONArray();
+
+            for (int i = 0; i < repoArray.length(); i++){
+              JSONObject repo = repoArray.getJSONObject(i);
+              String repoName = repo.getString("full_name");
+              Integer repoID = repo.getInt("id");
+              JSONObject owner = repo.getJSONObject("owner");
+              String login = owner.getString("login");
+              JSONObject newRepo = new JSONObject();
+              newRepo.put("name", repoName);
+              newRepo.put("id", repoID);
+              newRepo.put("login", login);
+              newJSON.put(newRepo);
+            }
+
+            builder.append("HTTP/1.1 200 OK\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append(newJSON.toString());
+
           } catch (StringIndexOutOfBoundsException s){
-            error = true;
             builder.append("HTTP/1.1 400 Bad Request\n");
             builder.append("Content-Type: text/html; charset=utf-8\n");
             builder.append("\n");
             builder.append("Must provide a query");
           }
           
-          JSONArray repoArray = new JSONArray(json);
-          JSONArray newJSON = new JSONArray();
-
-          for (int i = 0; i < repoArray.length(); i++){
-            JSONObject repo = repoArray.getJSONObject(i);
-            String repoName = repo.getString("full_name");
-            Integer repoID = repo.getInt("id");
-            JSONObject owner = repo.getJSONObject("owner");
-            String login = owner.getString("login");
-            JSONObject newRepo = new JSONObject();
-            newRepo.put("name", repoName);
-            newRepo.put("id", repoID);
-            newRepo.put("login", login);
-            newJSON.put(newRepo);
-          }
-
-
-
-          builder.append("HTTP/1.1 200 OK\n");
-          builder.append("Content-Type: text/html; charset=utf-8\n");
-          builder.append("\n");
-          builder.append(newJSON.toString());
           // TODO: Parse the JSON returned by your fetch and create an appropriate
           // response based on what the assignment document asks for
 
