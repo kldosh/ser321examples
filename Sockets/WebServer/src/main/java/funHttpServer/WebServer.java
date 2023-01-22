@@ -14,7 +14,7 @@ little easier is used. This is done so you see exactly how to pars the request a
 write a response back
 */
 
-package funHttpServer;
+//package funHttpServer;
 
 import java.io.*;
 import java.net.*;
@@ -202,8 +202,15 @@ class WebServer {
           query_pairs = splitQuery(request.replace("multiply?", ""));
 
           // extract required fields from parameters
-          Integer num1 = Integer.parseInt(query_pairs.get("num1"));
-          Integer num2 = Integer.parseInt(query_pairs.get("num2"));
+          Integer num1 = 0;
+          Integer num2 = 0;
+
+          if (query_pairs.get("num1") != null){
+            num1 = Integer.parseInt(query_pairs.get("num1"));
+          }
+          if (query_pairs.get("num2") != null){
+            num2 = Integer.parseInt(query_pairs.get("num2"));
+          }
 
           // do math
           Integer result = num1 * num2;
