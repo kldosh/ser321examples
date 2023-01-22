@@ -14,7 +14,7 @@ little easier is used. This is done so you see exactly how to pars the request a
 write a response back
 */
 
-//package funHttpServer;
+package funHttpServer;
 
 import java.io.*;
 import java.net.*;
@@ -216,9 +216,14 @@ class WebServer {
             builder.append("Result is: " + result);
           } catch (StringIndexOutOfBoundsException s) {
             builder.append("HTTP/1.1 400 Bad Request\n");
-            builder.append("Content-Type: text/html; charset=utf-h\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
             builder.append("\n");
             builder.append("Must provide num1 and num2 parameters");
+          } catch (NumberFormatException n) {
+            builder.append("HTTP/1.1 400 Bad Request\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append("num1 and num2 must be Integers");
           }
 
           // TODO: Include error handling here with a correct error code and
