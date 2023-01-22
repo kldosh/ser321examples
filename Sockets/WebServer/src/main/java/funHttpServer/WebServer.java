@@ -250,7 +250,7 @@ class WebServer {
           for (int i = 0; i < repoArray.length(); i++){
             JSONObject repo = repoArray.getJSONObject(i);
             String repoName = repo.getString("full_name");
-            String repoID = repo.getString("id");
+            Integer repoID = repo.getInt("id");
             JSONObject owner = repo.getJSONObject("owner");
             String login = owner.getString("login");
             JSONObject newRepo = new JSONObject();
