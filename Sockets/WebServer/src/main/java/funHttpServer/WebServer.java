@@ -199,27 +199,27 @@ class WebServer {
 
           Map<String, String> query_pairs = new LinkedHashMap<String, String>();
           // extract path parameters
-          query_pairs = splitQuery(request.replace("multiply?", ""));
+          try {
+            query_pairs = splitQuery(request.replace("multiply?", ""));
 
-          // extract required fields from parameters
-          Integer num1 = 0;
-          Integer num2 = 0;
+            // extract required fields from parameters
+            Integer num1 = Integer.parseInt(query_pairs.get("num1"));
+            Integer num2 = Integer.parseInt(query_pairs.get("num2"));
 
-          if (query_pairs.get("num1") != null){
-            num1 = Integer.parseInt(query_pairs.get("num1"));
+            // do math
+            Integer result = num1 * num2;
+
+            // Generate response
+            builder.append("HTTP/1.1 200 OK\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append("Result is: " + result);
+          } catch (StringIndexOutOfBoundsException s) {
+            builder.append("HTTP/1.1 400 Bad Request\n");
+            builder.append("Content-Type: text/html; charset=utf-h\n");
+            builder.append("\n");
+            builder.append("Must provide num1 and num2 parameters");
           }
-          if (query_pairs.get("num2") != null){
-            num2 = Integer.parseInt(query_pairs.get("num2"));
-          }
-
-          // do math
-          Integer result = num1 * num2;
-
-          // Generate response
-          builder.append("HTTP/1.1 200 OK\n");
-          builder.append("Content-Type: text/html; charset=utf-8\n");
-          builder.append("\n");
-          builder.append("Result is: " + result);
 
           // TODO: Include error handling here with a correct error code and
           // a response that makes sense
