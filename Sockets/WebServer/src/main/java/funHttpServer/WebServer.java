@@ -327,6 +327,11 @@ class WebServer {
             builder.append("Content-Type: text/html; charset=utf-8\n");
             builder.append("\n");
             builder.append("Must provide two parameters");
+          } catch (NullPointerException n){
+            builder.append("HTTP/1.1 400 Bad Request\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append("parameters must be named str1 and str2");
           }
         }else {
           // if the request is not recognized at all
