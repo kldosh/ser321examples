@@ -280,7 +280,33 @@ class WebServer {
           // TODO: Parse the JSON returned by your fetch and create an appropriate
           // response based on what the assignment document asks for
 
-        } else {
+        } else if (request.contains("GCD?")){
+          Map<String, String> query_pairs = new LinkedHashMap<>();
+          try {
+            query_pairs = splitQuery(request.replace("GCD?", ""));
+            Integer num1 = Integer.parseInt(query_pairs.get("num1"));
+            Integer num2 = Integer.parseInt(query_pairs.get("num2"));
+            String result = GCD(num1, num2);
+
+            builder.append("HTTP/1.1 200 OK\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append("The greatest common divisor is: " + result);
+          } catch (StringIndexOutOfBoundsException s) {
+            builder.append("HTTP/1.1 400 Bad Request\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append("Must provide num1 and num2 parameters");
+          } catch (NumberFormatException n) {
+            builder.append("HTTP/1.1 400 Bad Request\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append("num1 and num2 must be Integers");
+          }
+
+        } else if (request.contains("Isomorphic?")){
+
+        }else {
           // if the request is not recognized at all
 
           builder.append("HTTP/1.1 400 Bad Request\n");
@@ -298,6 +324,44 @@ class WebServer {
     }
 
     return response;
+  }
+
+  public static String GCD(Integer num1, Integer num2){
+    int big;
+    int small;
+    int q;
+    int r = -1;
+
+    if (num1 == num2){
+      return "" + num1;
+    }else if (num1 > num2){
+      big = num1;
+      small = num2;
+    } else {
+      big = num2;
+      small = num1;
+    }
+
+    while (true){
+      q = getQ(big, small);
+      r = big % (small * q);
+      if (r == 0){
+        return "" + small;
+      } else {
+        big = small;
+        small = r;
+      }
+    }
+  }
+
+  public static int getQ(int big, int small){
+    int q = 1;
+
+    while (small * q <= big){
+      q++;
+    }
+
+    return q - 1;
   }
 
   /**
