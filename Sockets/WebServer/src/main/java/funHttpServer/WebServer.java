@@ -302,6 +302,16 @@ class WebServer {
             builder.append("Content-Type: text/html; charset=utf-8\n");
             builder.append("\n");
             builder.append("num1 and num2 must be Integers");
+          } catch (IllegalArgumentException i){
+            builder.append("HTTP/1.1 400 Bad Request\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append("division by 0 is not supported");
+          }catch (ArithmeticException i){
+            builder.append("HTTP/1.1 400 Bad Request\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append("Only positive numbers are supported");
           }
 
         } else if (request.contains("Isomorphic?")){
@@ -357,7 +367,7 @@ class WebServer {
     if (str1.length() != str2.length()){
       return false;
     }
-    
+
     Map<Character, Character> isoMap = new HashMap<>();
     char[] str1Chars = str1.toCharArray();
     char[] str2Chars = str2.toCharArray();
@@ -379,20 +389,26 @@ class WebServer {
 
     return true;
   }
-  public static String GCD(Integer num1, Integer num2){
+  public static String GCD(Integer num1, Integer num2) throws IllegalArgumentException{
     int big;
     int small;
     int q;
     int r = -1;
 
-    if (num1 == num2){
+    if (num1 < 0 || num2 < 0){
+      throw new ArithmeticException();
+    } else if (num1 == num2){
       return "" + num1;
-    }else if (num1 > num2){
+    } else if (num1 > num2){
       big = num1;
       small = num2;
     } else {
       big = num2;
       small = num1;
+    }
+
+    if (small == 0){
+      throw new IllegalArgumentException();
     }
 
     while (true){
