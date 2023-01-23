@@ -354,6 +354,10 @@ class WebServer {
   }
 
   public static boolean isIsomorphic(String str1, String str2){
+    if (str1.length() != str2.length()){
+      return false;
+    }
+    
     Map<Character, Character> isoMap = new HashMap<>();
     char[] str1Chars = str1.toCharArray();
     char[] str2Chars = str2.toCharArray();
