@@ -305,7 +305,29 @@ class WebServer {
           }
 
         } else if (request.contains("Isomorphic?")){
+          Map<String, String> query_pairs = new LinkedHashMap<>();
+          try {
+            query_pairs = splitQuery(request.replace("Isomorphic?", ""));
+            String str1 = query_pairs.get("str1");
+            String str2 = query_pairs.get("str2");
+            String result;
 
+            if (isIsomorphic(str1, str2)){
+              result = "True. " + str1 + " and " + str2 + " are isomorphic.";
+            } else {
+              result = "False. " + str1 + " and " + str2 + " are not isomorphic.";
+            }
+
+            builder.append("HTTP/1.1 200 OK\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append(result);
+          } catch (StringIndexOutOfBoundsException s) {
+            builder.append("HTTP/1.1 400 Bad Request\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append("Must provide two parameters");
+          }
         }else {
           // if the request is not recognized at all
 
@@ -326,6 +348,28 @@ class WebServer {
     return response;
   }
 
+  public static boolean isIsomorphic(String str1, String str2){
+    Map<Character, Character> isoMap = new HashMap<>();
+    char[] str1Chars = str1.toCharArray();
+    char[] str2Chars = str2.toCharArray();
+
+    for (int i = 0; i < str1Chars.length; i++){
+      Character char1 = str1Chars[i];
+      Character char2 = str2Chars[i];
+
+      if (isoMap.containsKey(char1)){
+        if (isoMap.get(char1) != char2){
+          return false;
+        }
+      } else if (isoMap.containsValue(char2)){
+        return false;
+      } else {
+        isoMap.put(char1, char2);
+      }
+    }
+
+    return true;
+  }
   public static String GCD(Integer num1, Integer num2){
     int big;
     int small;
