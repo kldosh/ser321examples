@@ -412,7 +412,7 @@ class WebServer {
     }
 
     while (true){
-      q = getQ(big, small);
+      q = big / small;
       r = big % (small * q);
       if (r == 0){
         return "" + small;
@@ -421,16 +421,6 @@ class WebServer {
         small = r;
       }
     }
-  }
-
-  public static int getQ(int big, int small){
-    int q = 1;
-
-    while (small * q <= big){
-      q++;
-    }
-
-    return q - 1;
   }
 
   /**
